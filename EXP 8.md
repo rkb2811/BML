@@ -17,13 +17,7 @@ pip install numpy pandas scikit-learn matplotlib seaborn
 ```
 
 ## Usage
-### 1. Clone the Repository
-```sh
-git clone https://github.com/yourusername/kmeans-clustering-python.git
-cd kmeans-clustering-python
-```
-
-### 2. Run the Script
+### Run the Script
 Execute the Python script to perform K-Means clustering:
 
 ```sh

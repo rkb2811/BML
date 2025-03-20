@@ -17,13 +17,8 @@ pip install numpy pandas scikit-learn matplotlib
 ```
 
 ## Usage
-### 1. Clone the Repository
-```sh
-git clone https://github.com/yourusername/knn-classifier-python.git
-cd knn-classifier-python
-```
 
-### 2. Run the Script
+### Run the Script
 Execute the Python script to train and test the KNN model:
 
 ```sh

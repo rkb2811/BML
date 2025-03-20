@@ -3,7 +3,7 @@
 ## Introduction
 The Naive Bayes classifier is a probabilistic machine learning model based on Bayes' theorem. It is commonly used for classification tasks such as spam filtering, sentiment analysis, and document classification.
 
-## Prerequisites
+## Requirements
 Before running the Naive Bayes classifier, ensure you have the following installed:
 - Python 3.x
 - NumPy
@@ -31,66 +31,33 @@ The classifier works on a dataset with categorical or numerical features. You ca
 
 ## Code Implementation
 ```python
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
 from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.datasets import make_classification
+from sklearn.metrics import accuracy_score
 
-# Load Dataset (Example: Iris Dataset)
-from sklearn.datasets import load_iris
-data = load_iris()
-df = pd.DataFrame(data.data, columns=data.feature_names)
-df['target'] = data.target
+# Generate sample dataset
+X, y = make_classification(n_samples=1000, n_features=10, random_state=42)
 
-# Splitting Data
-X = df.drop('target', axis=1)
-y = df['target']
+# Split into training and testing
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Train Naïve Bayes Model
+# Initialize Naive Bayes classifier
 model = GaussianNB()
+
+# Train the model
 model.fit(X_train, y_train)
 
-# Make Predictions
+# Make predictions
 y_pred = model.predict(X_test)
 
-# Evaluate Model
-accuracy = accuracy_score(y_test, y_pred)
-print("Accuracy:", accuracy)
-print("Classification Report:\n", classification_report(y_test, y_pred))
-print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
-
-# Plot Confusion Matrix
-import seaborn as sns
-plt.figure(figsize=(6,4))
-sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt='d', cmap='Blues')
-plt.xlabel('Predicted')
-plt.ylabel('Actual')
-plt.title('Confusion Matrix')
-plt.show()
+# Print accuracy
+print(f"Accuracy: {accuracy_score(y_test, y_pred):.2f}")
 ```
 
 ## Output Example
 ```
-Accuracy: 0.96
-Classification Report:
-              precision    recall  f1-score   support
-
-           0       1.00      1.00      1.00        10
-           1       0.92      1.00      0.96        12
-           2       1.00      0.88      0.93         8
-
-    accuracy                           0.96        30
-   macro avg       0.97      0.96      0.96        30
-weighted avg       0.96      0.96      0.96        30
-
-Confusion Matrix:
-[[10  0  0]
- [ 0 12  0]
- [ 0  1  7]]
+Accuracy: 0.81
 ```
 
 ## Applications

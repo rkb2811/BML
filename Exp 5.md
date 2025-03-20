@@ -1,4 +1,4 @@
-# Decision Tree in Python
+# Decision Tree 
 
 ## Overview
 This project implements a Decision Tree classifier using Python. The Decision Tree algorithm is a supervised learning method used for classification and regression tasks. It works by recursively splitting the data into subsets based on the most significant attribute.

@@ -1,4 +1,4 @@
-# K-Nearest Neighbors (KNN) Classifier in Python
+# K-Nearest Neighbors (KNN) Classifier 
 
 ## Overview
 This project implements a K-Nearest Neighbors (KNN) classifier using Python. KNN is a simple, non-parametric algorithm used for classification and regression tasks. It classifies a data point based on the majority class of its nearest neighbors.

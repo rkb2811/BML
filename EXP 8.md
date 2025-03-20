@@ -1,4 +1,5 @@
-# K-Means Clustering in Python
+# K-Means Clustering
+
 
 ## Overview
 This project implements the K-Means clustering algorithm using Python. K-Means is an unsupervised machine learning algorithm used for grouping data points into `k` clusters based on feature similarity.
@@ -58,7 +59,8 @@ plt.legend()
 plt.show()
 ```
 
-
+### Output:
+ ![download](https://github.com/user-attachments/assets/0947376b-45ed-4699-9c69-1a7888088947)
 
 
 

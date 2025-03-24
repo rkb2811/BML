@@ -68,6 +68,7 @@ plt.show()
 ```
 Accuracy: 1.0
 ```
+![download (12)](https://github.com/user-attachments/assets/71d526a8-91cb-4048-a161-da559e23bcca)
 
 
 

@@ -27,46 +27,110 @@ python decision_tree.py
 
 ## Example Code
 ```python
-import numpy as np
 import pandas as pd
+import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier, plot_tree
-from sklearn.metrics import accuracy_score
-import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder
 
-# Sample dataset
-data = {
-    'Feature1': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    'Feature2': [5, 3, 8, 7, 6, 2, 4, 9, 1, 10],
-    'Target': [0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
-}
-df = pd.DataFrame(data)
+# Load the dataset
+df = pd.read_csv(r"/content/drive/MyDrive/winequality-red.csv", sep=';')
 
-# Splitting dataset
-X = df.drop(columns=['Target'])
-y = df['Target']
+# Feature columns (X) and target (y)
+X = df.drop('quality', axis=1).values  # Features (excluding 'quality')
+y = df['quality'].values  # Target variable (quality)
+
+# Split the data into training and testing sets (80% training, 20% testing)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Training Decision Tree model
-clf = DecisionTreeClassifier()
-clf.fit(X_train, y_train)
+# Helper functions for entropy and information gain
+def entropy(y):
+    proportions = np.bincount(y) / len(y)
+    return -np.sum([p * np.log2(p) for p in proportions if p > 0])
 
-# Predictions
-y_pred = clf.predict(X_test)
+def information_gain(y, left_indices, right_indices):
+    parent_entropy = entropy(y)
+    left_entropy = entropy(y[left_indices])
+    right_entropy = entropy(y[right_indices])
+    n = len(y)
+    n_left, n_right = len(left_indices), len(right_indices)
+    weighted_entropy = (n_left / n) * left_entropy + (n_right / n) * right_entropy
+    return parent_entropy - weighted_entropy
 
-# Evaluating accuracy
-accuracy = accuracy_score(y_test, y_pred)
+# Building the Decision Tree
+class DecisionTreeNode:
+    def __init__(self, feature=None, threshold=None, left=None, right=None, value=None):
+        self.feature = feature
+        self.threshold = threshold
+        self.left = left
+        self.right = right
+        self.value = value
+
+class DecisionTreeClassifierScratch:
+    def __init__(self, max_depth=None):
+        self.max_depth = max_depth
+        self.root = None
+
+    def fit(self, X, y):
+        self.root = self._grow_tree(X, y)
+
+    def _grow_tree(self, X, y, depth=0):
+        n_samples, n_features = X.shape
+        n_labels = len(np.unique(y))
+
+        # Stopping criteria
+        if depth >= self.max_depth or n_labels == 1 or n_samples < 2:
+            leaf_value = np.bincount(y).argmax()
+            return DecisionTreeNode(value=leaf_value)
+
+        # Find the best split
+        best_gain = -1
+        split_idx, split_threshold = None, None
+        for feature_idx in range(n_features):
+            thresholds = np.unique(X[:, feature_idx])
+            for threshold in thresholds:
+                left_indices = np.where(X[:, feature_idx] <= threshold)[0]
+                right_indices = np.where(X[:, feature_idx] > threshold)[0]
+                if len(left_indices) == 0 or len(right_indices) == 0:
+                    continue
+                gain = information_gain(y, left_indices, right_indices)
+                if gain > best_gain:
+                    best_gain = gain
+                    split_idx = feature_idx
+                    split_threshold = threshold
+
+        # Split data
+        left_indices = np.where(X[:, split_idx] <= split_threshold)[0]
+        right_indices = np.where(X[:, split_idx] > split_threshold)[0]
+        left_child = self._grow_tree(X[left_indices], y[left_indices], depth + 1)
+        right_child = self._grow_tree(X[right_indices], y[right_indices], depth + 1)
+        return DecisionTreeNode(feature=split_idx, threshold=split_threshold, left=left_child, right=right_child)
+
+    def predict(self, X):
+        return np.array([self._traverse_tree(x, self.root) for x in X])
+
+    def _traverse_tree(self, x, node):
+        if node.value is not None:
+            return node.value
+        if x[node.feature] <= node.threshold:
+            return self._traverse_tree(x, node.left)
+        return self._traverse_tree(x, node.right)
+
+# Train the custom Decision Tree Classifier
+tree = DecisionTreeClassifierScratch(max_depth=3)
+tree.fit(X_train, y_train)
+
+# Make predictions
+y_pred = tree.predict(X_test)
+
+# Calculate accuracy
+accuracy = np.mean(y_pred == y_test)
 print("Accuracy:", accuracy)
-
-# Visualizing the Decision Tree
-plt.figure(figsize=(8, 6))
-plot_tree(clf, feature_names=X.columns, class_names=['Class 0', 'Class 1'], filled=True)
-plt.show()
 
 ```
 ### Output:
 ```
-Accuracy: 1.0
+Accuracy: 0.546875
+
 ```
 ![download (12)](https://github.com/user-attachments/assets/71d526a8-91cb-4048-a161-da559e23bcca)
 
